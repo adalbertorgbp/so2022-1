@@ -30,7 +30,7 @@ public class JavaApplication1 {
       //sim = random. nextInt(30);
       for (int i = 0; i < n_processos; i++) {
         if (aleatorio == 1){
-            tempo_execucao[i] = random.nextInt(10);
+            tempo_execucao[i] = random.nextInt(10)+1;
         }
         else {
             System.out.print("Digite o tempo de execução do processo["+i+"]:  ");
@@ -46,21 +46,32 @@ public class JavaApplication1 {
       int processo_em_execucao;
       processo_em_execucao = 0;
       
-      for (int tempo = 0; tempo<= 1000; tempo++){
+     
+      
+      for (int tempo = 1; tempo<= 1000; tempo++){
           try {
-            if (tempo_restante[processo_em_execucao]!=0){ 
-                if (processo_em_execucao != (n_processos - 1)) {
-                    System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+tempo_restante[processo_em_execucao]);
+              if (tempo_restante[processo_em_execucao] == tempo_execucao[processo_em_execucao])
+                    tempo_espera[processo_em_execucao] = tempo;
+                
+            if (tempo_restante[processo_em_execucao]!=1){ 
+                
+                if (processo_em_execucao != (n_processos)) {
+                    System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+(tempo_restante[processo_em_execucao]-1));
+                    tempo_restante[processo_em_execucao]--;
                 }
                 else
                     break;
             }
-            else
-                processo_em_execucao++;
+            else {
+                System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+(tempo_restante[processo_em_execucao]-1));
+                tempo_restante[processo_em_execucao]--;
+                if ((processo_em_execucao+1) != (n_processos))
+                    processo_em_execucao++;
+                else
+                    break;
+            }
             
-            tempo_restante[processo_em_execucao]--;
-            
-            Thread.sleep(1000);
+//            Thread.sleep(1000);
           }
           catch (Exception e) {
             
@@ -68,7 +79,16 @@ public class JavaApplication1 {
             System.out.println(e);
         }
       }
-      
+    
+    int tempo_total = 0;
+    for (int i = 0; i < n_processos; i++) {
+          System.out.println("Process["+i+"]: tempo_espera="+ tempo_espera[i]);
+          tempo_total = tempo_espera[i] + tempo_total;
+    }
+    
+    System.out.println("Tempo medio de espera: "+tempo_total/n_processos);
+       
+              
     }
    
 }
