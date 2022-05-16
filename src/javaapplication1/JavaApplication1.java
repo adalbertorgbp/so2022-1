@@ -27,7 +27,7 @@ public class JavaApplication1 {
       System.out.print("Será aleatório?:  ");
       aleatorio =  teclado.nextInt();
       
-      //sim = random. nextInt(30);
+      
       for (int i = 0; i < n_processos; i++) {
         if (aleatorio == 1){
             tempo_execucao[i] = random.nextInt(10)+1;
@@ -51,7 +51,7 @@ public class JavaApplication1 {
       for (int tempo = 1; tempo<= 1000; tempo++){
           try {
               if (tempo_restante[processo_em_execucao] == tempo_execucao[processo_em_execucao])
-                    tempo_espera[processo_em_execucao] = tempo;
+                    tempo_espera[processo_em_execucao] = tempo -1;
                 
             if (tempo_restante[processo_em_execucao]!=1){ 
                 
@@ -80,7 +80,7 @@ public class JavaApplication1 {
         }
       }
     
-    int tempo_total = 0;
+    float tempo_total = 0;
     for (int i = 0; i < n_processos; i++) {
           System.out.println("Process["+i+"]: tempo_espera="+ tempo_espera[i]);
           tempo_total = tempo_espera[i] + tempo_total;
