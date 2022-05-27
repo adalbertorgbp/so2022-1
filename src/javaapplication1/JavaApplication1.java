@@ -3,21 +3,25 @@
 package javaapplication1;
 
 import java.util.Scanner;
+
 import java.util.Random;
-import java.lang.Thread;
 
 public class JavaApplication1 {
 
+    static int MAXIMO_TEMPO_EXECUCAO = 65535;
+
     static int n_processos = 3;  
     int[] id = new int[n_processos];
-    static int[] tempo_execucao = new int[n_processos];
-    static int[] tempo_espera = new int[n_processos];
-    static int[] tempo_restante = new int[n_processos];
-    static int[] tempo_chegada = new int[n_processos];
+    
      
     public static void main(String[] args) {
       
       int aleatorio;
+
+     int[] tempo_execucao = new int[n_processos];
+     int[] tempo_espera = new int[n_processos];
+     int[] tempo_restante = new int[n_processos];
+     int[] tempo_chegada = new int[n_processos];
       
       //Popular Processos
       Scanner teclado = new Scanner (System.in);
@@ -43,45 +47,68 @@ public class JavaApplication1 {
 
       }
       
-      //Imprime lista de processos
-      for (int i = 0; i < n_processos; i++) {
-          System.out.println("Process["+i+"]: tempo_execucao="+ tempo_execucao[i] + " tempo_restante="+tempo_restante[i] + " tempo_chegada=" + tempo_chegada[i]);
-      }
+      imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
       
       //Escolher algoritmo
       int alg;
       
-      
-      System.out.print("Escolha o argoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Não Preemptivo]: ");
-      alg =  teclado.nextInt();
-     
-      
-      if (alg == 1) { //FCFS
-          FCFS();
-      }
-      else if (alg == 2) {
-          SJF_preemptivo();
-      }
-      else if (alg == 3) {
-          SJF_nao_preemptivo();
+      while(true) {
+        System.out.print("Escolha o argoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Não Preemptivo 4=Imprime lista de processos 5=Sair]: ");
+        alg =  teclado.nextInt();
         
-      }
+        
+        if (alg == 1) { //FCFS
+            FCFS(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+        }
+        else if (alg == 2) {
+            SJF(true, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+        }
+        else if (alg == 3) {
+            SJF(false, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+            
+        }
+        else if (alg == 4) {
+            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+        }
+        else if (alg == 5) {
+            break;
+            
+        }
+    }
+    
       
      
     
-    //Calcula e imprime estatisticas
-    float tempo_total = 0;
-    for (int i = 0; i < n_processos; i++) {
-          System.out.println("Process["+i+"]: tempo_espera="+ tempo_espera[i]);
-          tempo_total = tempo_espera[i] + tempo_total;
-    }
-    System.out.println("Tempo medio de espera: "+tempo_total/n_processos);
+    
        
               
     }
+
+    public static void imprime_processos(int[] tempo_execucao, int[] tempo_espera, int[] tempo_restante, int[] tempo_chegada){
+        //Imprime lista de processos
+      for (int i = 0; i < n_processos; i++) {
+        System.out.println("Process["+i+"]: tempo_execucao="+ tempo_execucao[i] + " tempo_restante="+tempo_restante[i] + " tempo_chegada=" + tempo_chegada[i]);
+    }
+    }
+
+    public static void imprime_stats (int[] espera) {
+        int[] tempo_espera = espera.clone();
+        //Calcula e imprime estatisticas
+        float tempo_total = 0;
+        for (int i = 0; i < n_processos; i++) {
+            System.out.println("Process["+i+"]: tempo_espera="+ tempo_espera[i]);
+            tempo_total = tempo_espera[i] + tempo_total;
+        }
+        System.out.println("Tempo medio de espera: "+tempo_total/n_processos);
+    }
     
-    public static void FCFS(){
-        //Executar processos
+    public static void FCFS(int[] execucao, int[] espera, int[] restante, int[] chegada){
+        int[] tempo_execucao = execucao.clone();
+        int[] tempo_espera = espera.clone();
+        int[] tempo_restante = restante.clone();
+        int[] tempo_chegada = chegada.clone();
+
+
       int processo_em_execucao;
       processo_em_execucao = 0;
       for (int tempo = 1; tempo<= 1000; tempo++){
@@ -115,102 +142,69 @@ public class JavaApplication1 {
             System.out.println(e);
         }
       }
+      imprime_stats(tempo_espera);
     }
     
-    public static void SJF_preemptivo(){
-        //Executar processo preemptivo
-      int processo_em_execucao;
-      processo_em_execucao = 0;
-      for (int tempo = 1; tempo<= 1000; tempo++){
-          try {
-              if (tempo_restante[processo_em_execucao] == tempo_execucao[processo_em_execucao])
-                    tempo_espera[processo_em_execucao] = tempo -1;
-                
-            if (tempo_restante[processo_em_execucao]!=1){ 
-                
-                if (processo_em_execucao != (n_processos)) {
-                    System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+(tempo_restante[processo_em_execucao]-1));
-                    tempo_restante[processo_em_execucao]--;
-                }
-                else
-                    break;
-            }
-            else {
-                System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+(tempo_restante[processo_em_execucao]-1));
-                tempo_restante[processo_em_execucao]--;
-                if ((processo_em_execucao+1) != (n_processos))
-                    processo_em_execucao++;
-                else
-                    break;
-            }
+    public static void SJF(boolean preemptivo, int[] execucao, int[] espera, int[] restante, int[] chegada){
+        int[] tempo_execucao = execucao.clone();
+        int[] tempo_espera = espera.clone();
+        int[] tempo_restante = restante.clone();
+        int[] tempo_chegada = chegada.clone();
+
+        int menor_tempo_execucao = MAXIMO_TEMPO_EXECUCAO;
+        int processo_em_execucao = -1;
+        int proc_terminados = 0;
             
-//            Thread.sleep(1000);
-          }
-          catch (Exception e) {
-            
-            // catching the exception
-            System.out.println(e);
-        }
-      }
-    }
-    
-    public static int escolhe_processo(int tempo, int processo_em_execucao){
-        int processo_escolhido = processo_em_execucao;
-        int menor_tempo_execucao = 100;
-        //escolha de qual processo vai executar
-        //if (processo_em_execucao != -1) {
-              for (int i = 0; i<n_processos; i++){ 
-                if (tempo_chegada[i] <= tempo) { //testa para saber se o processo jah chegou
-                  //for (int i = 0; i<n_processos; i++){ 
-                    //verifica qual processo ja esta pronto, ou seja, ja chegou
-                    if (tempo_restante[i] == tempo_execucao[i]) { //testa para saber se o processo jah executou
-                        if (tempo_restante[i] < menor_tempo_execucao) { //testa para saber se o tempo de execucao do processo eh o menor dentre aqueles que jah chegaram
-                                menor_tempo_execucao = tempo_restante[i];
-                                processo_escolhido = i;
-                            }
+        //linha do tempo
+        for (int tempo = 1; tempo<= 1000; tempo++) {
+
+            // escolha de qual processo irá executar
+            // se preemptivo, sempre entrar no for, se não preemptivo, testa se tem algum processo em execução
+            if ((preemptivo) || ((!preemptivo) && (processo_em_execucao == -1))) {
+                //varre a lista de processos para ver qual processo já chegou e tem o menor tempo de execucao
+                for (int proc=0; proc<n_processos; proc++) {
+                    //se o processo ainda não começou sua execução (tempo_restante[proc] != 0) e o tempo de chegada for menor ou igual ao instante de tempo atual entra no IF para ver qual é o menor tempo de execução
+                    if ((tempo_restante[proc] != 0) && (tempo_chegada[proc] <= tempo)) {
+                        // testa para saber se o tempo de execução é menor do que o menor tempo já registrado
+                        if (tempo_execucao[proc] < menor_tempo_execucao) {
+                            menor_tempo_execucao = tempo_execucao[proc];
+                            processo_em_execucao = proc;
+                        }
                     }
-                    else
-                        processo_escolhido = i;
-                  //}
                 }
-              }
-              System.out.println("");
-              System.out.println("processo escolhido="+processo_escolhido);
-              return processo_escolhido;
-        //}
-    }
-    
-    
-    public static void SJF_nao_preemptivo(){
-        //Executar processo não preemptivo
+            }
             
-    
-      int processo_escolhido = -1;
-              
-      for (int tempo = 1; tempo<= 1000; tempo++){
-          try {
-              processo_escolhido=escolhe_processo(tempo, processo_escolhido);
-              
-              if (processo_escolhido == -1)
-                  System.out.println("tempo["+tempo+"]: nenhum processo");
-              else {
-                tempo_restante[processo_escolhido]--;
-                System.out.println("tempo["+tempo+"]: processo["+processo_escolhido+"] restante="+(tempo_restante[processo_escolhido]));
-              }
-              //Thread.sleep(1000);
+            //se a saída do laço anterior resultador em processo_em_execução = -1, significa que nenhum processo está pronto
+            if (processo_em_execucao == -1) 
+                System.out.println("tempo["+tempo+"]: nenhum processo está pronto");
+            //neste caso algum processo foi escolhido e iniciará sua execução até o fim
+            else {
+                
+                //registra o tempo de espera do processo escolhido (somente na primeira passada1)
+                if (tempo_restante[processo_em_execucao] == tempo_execucao[processo_em_execucao])
+                    tempo_espera[processo_em_execucao] = tempo - tempo_chegada[processo_em_execucao];
+                
+                //decrementa o tempo restante de execução do processo
+                tempo_restante[processo_em_execucao]--;
+                
+                //imprime em tela as informações do processo em execução
+                System.out.println("tempo["+tempo+"]: processo["+processo_em_execucao+"] restante="+(tempo_restante[processo_em_execucao]));
+                
+                // se já executou todo o tempo necessário, então seta as variáveis de controle para os valores iniciais, assim forçará a entrar no laço de escolha de processo para executar
+                if (tempo_restante[processo_em_execucao] == 0) {
+                    processo_em_execucao = -1;
+                    menor_tempo_execucao = MAXIMO_TEMPO_EXECUCAO;
+                    proc_terminados++;
+                    //se o número de processos terminador for igual ao número de processos total, termina a aplicação
+                    if (proc_terminados == n_processos)
+                        break;
+                    
+                }    
+            }
           }
-          
-          
-          //
-          //tempo_restante[processo_em_execucao]--;
-                    
-                    
-          catch (Exception e) {
-            
-            // catching the exception
-            System.out.println(e);
-        }
-      }
+
+          imprime_stats(tempo_espera);
       
     }
+
 }
