@@ -16,36 +16,18 @@ public class JavaApplication1 {
      
     public static void main(String[] args) {
       
-      int aleatorio;
+     
 
      int[] tempo_execucao = new int[n_processos];
      int[] tempo_espera = new int[n_processos];
      int[] tempo_restante = new int[n_processos];
      int[] tempo_chegada = new int[n_processos];
       
-      //Popular Processos
       Scanner teclado = new Scanner (System.in);
-      Random random = new Random();
       
-      System.out.print("Será aleatório?:  ");
-      aleatorio =  teclado.nextInt();
       
-      for (int i = 0; i < n_processos; i++) {
-        //Popular Processos Aleatorio
-        if (aleatorio == 1){
-            tempo_execucao[i] = random.nextInt(10)+1;
-            tempo_chegada[i] = random.nextInt(10)+1;
-        }
-        //Popular Processos Manual
-        else {
-            System.out.print("Digite o tempo de execução do processo["+i+"]:  ");
-            tempo_execucao[i] = teclado.nextInt();
-            System.out.print("Digite o tempo de chegada do processo["+i+"]:  ");
-            tempo_chegada[i] = teclado.nextInt();
-        }
-        tempo_restante[i] = tempo_execucao[i];
-
-      }
+      popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+      
       
       imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
       
@@ -53,7 +35,7 @@ public class JavaApplication1 {
       int alg;
       
       while(true) {
-        System.out.print("Escolha o argoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Não Preemptivo 4=Imprime lista de processos 5=Sair]: ");
+        System.out.print("Escolha o argoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Não Preemptivo 4=Imprime lista de processos 5=Popular processos novamente 6=Sair]: ");
         alg =  teclado.nextInt();
         
         
@@ -71,6 +53,10 @@ public class JavaApplication1 {
             imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
         }
         else if (alg == 5) {
+            popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
+        }
+        else if (alg == 6) {
             break;
             
         }
@@ -83,6 +69,34 @@ public class JavaApplication1 {
        
               
     }
+
+    public static void popular_processos(int[] tempo_execucao, int[] tempo_espera, int[] tempo_restante, int[] tempo_chegada){
+        Random random = new Random();
+        Scanner teclado = new Scanner (System.in);
+        int aleatorio;
+
+        System.out.print("Será aleatório?:  ");
+        aleatorio =  teclado.nextInt();
+
+        for (int i = 0; i < n_processos; i++) {
+            //Popular Processos Aleatorio
+            if (aleatorio == 1){
+                tempo_execucao[i] = random.nextInt(10)+1;
+                tempo_chegada[i] = random.nextInt(10)+1;
+            }
+            //Popular Processos Manual
+            else {
+                System.out.print("Digite o tempo de execução do processo["+i+"]:  ");
+                tempo_execucao[i] = teclado.nextInt();
+                System.out.print("Digite o tempo de chegada do processo["+i+"]:  ");
+                tempo_chegada[i] = teclado.nextInt();
+            }
+            tempo_restante[i] = tempo_execucao[i];
+    
+          }
+    }
+
+    
 
     public static void imprime_processos(int[] tempo_execucao, int[] tempo_espera, int[] tempo_restante, int[] tempo_chegada){
         //Imprime lista de processos
