@@ -28,7 +28,6 @@ public class JavaApplication1 {
       
       popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
       
-      
       imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
       
       //Escolher algoritmo
@@ -42,17 +41,17 @@ public class JavaApplication1 {
         if (alg == 1) { //FCFS
             FCFS(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
         }
-        else if (alg == 2) {
+        else if (alg == 2) { //SJF PREEMPTIVO
             SJF(true, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
         }
-        else if (alg == 3) {
+        else if (alg == 3) { //SJF NÃO PREEMPTIVO
             SJF(false, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
             
         }
-        else if (alg == 4) {
+        else if (alg == 4) { //IMPRIME CONTEÚDO INICIAL DOS PROCESSOS
             imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
         }
-        else if (alg == 5) {
+        else if (alg == 5) { //REATRIBUI VALORES INICIAIS
             popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
             imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada);
         }
@@ -165,7 +164,7 @@ public class JavaApplication1 {
         int[] tempo_restante = restante.clone();
         int[] tempo_chegada = chegada.clone();
 
-        int menor_tempo_execucao = MAXIMO_TEMPO_EXECUCAO;
+        int menor_tempo_restante = MAXIMO_TEMPO_EXECUCAO;
         int processo_em_execucao = -1;
         int proc_terminados = 0;
             
@@ -180,8 +179,8 @@ public class JavaApplication1 {
                     //se o processo ainda não começou sua execução (tempo_restante[proc] != 0) e o tempo de chegada for menor ou igual ao instante de tempo atual entra no IF para ver qual é o menor tempo de execução
                     if ((tempo_restante[proc] != 0) && (tempo_chegada[proc] <= tempo)) {
                         // testa para saber se o tempo de execução é menor do que o menor tempo já registrado
-                        if (tempo_execucao[proc] < menor_tempo_execucao) {
-                            menor_tempo_execucao = tempo_execucao[proc];
+                        if (tempo_restante[proc] < menor_tempo_restante) {
+                            menor_tempo_restante = tempo_restante[proc];
                             processo_em_execucao = proc;
                         }
                     }
@@ -194,7 +193,7 @@ public class JavaApplication1 {
             //neste caso algum processo foi escolhido e iniciará sua execução até o fim
             else {
                 
-                //registra o tempo de espera do processo escolhido (somente na primeira passada1)
+                //registra o tempo de espera do processo escolhido (somente na primeira passada)
                 if (tempo_restante[processo_em_execucao] == tempo_execucao[processo_em_execucao])
                     tempo_espera[processo_em_execucao] = tempo - tempo_chegada[processo_em_execucao];
                 
@@ -207,7 +206,7 @@ public class JavaApplication1 {
                 // se já executou todo o tempo necessário, então seta as variáveis de controle para os valores iniciais, assim forçará a entrar no laço de escolha de processo para executar
                 if (tempo_restante[processo_em_execucao] == 0) {
                     processo_em_execucao = -1;
-                    menor_tempo_execucao = MAXIMO_TEMPO_EXECUCAO;
+                    menor_tempo_restante = MAXIMO_TEMPO_EXECUCAO;
                     proc_terminados++;
                     //se o número de processos terminador for igual ao número de processos total, termina a aplicação
                     if (proc_terminados == n_processos)
