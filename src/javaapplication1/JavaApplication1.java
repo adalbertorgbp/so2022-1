@@ -327,22 +327,17 @@ public class JavaApplication1 {
             tempo_restante[processo_em_execucao]--;
             //controla quanto para o algoritmo
             if (tempo_restante[processo_em_execucao] == 0) {
-                System.out.println("1"); 
                 conttimeslice = 0;
                 proc_terminados++;
                 //se o número de processos terminador for igual ao número de processos total, termina a aplicação
                 if (proc_terminados == n_processos) {
-                   System.out.println("2"); 
                    break;
                 }
                 while (tempo_restante[processo_em_execucao] == 0) {
-                    System.out.println("3"); 
                     if ((processo_em_execucao+1) != (n_processos)) {
-                        System.out.println("4"); 
                         processo_em_execucao++;
                     }
                     else {
-                        System.out.println("5"); 
                         processo_em_execucao = 0;
                     }
                 }
@@ -350,9 +345,7 @@ public class JavaApplication1 {
             else
                 if ((conttimeslice+1) == (timeslice)) {
                     conttimeslice = 0;
-                    System.out.println("6"); 
                     if ((processo_em_execucao+1) != (n_processos)) {
-                        System.out.println("7"); 
                        if ((processo_em_execucao+1) != (n_processos)) {
                             processo_em_execucao++;
                         }
@@ -361,35 +354,27 @@ public class JavaApplication1 {
                         }
                         if (tempo_restante[processo_em_execucao] == 0) 
                             while (tempo_restante[processo_em_execucao] == 0) {
-                                System.out.println("12"); 
                                 if ((processo_em_execucao+1) != (n_processos)) {
-                                    System.out.println("13"); 
                                     processo_em_execucao++;
                                 }
                                 else {
-                                    System.out.println("14"); 
                                     break;
                                 }
                             }
                     }
                     else {
-                        System.out.println("8"); 
                         processo_em_execucao = 0;
                         while (tempo_restante[processo_em_execucao] == 0) {
-                            System.out.println("9"); 
                             if ((processo_em_execucao+1) != (n_processos)) {
-                                System.out.println("10"); 
                                 processo_em_execucao++;
                             }
                             else {
-                                System.out.println("11"); 
                                 break;
                             }
                         }
                     }
                 }
                 else {
-                    System.out.println("12"); 
                     conttimeslice++;
                 }
             
